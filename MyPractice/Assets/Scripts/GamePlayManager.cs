@@ -7,8 +7,6 @@ public class GamePlayManager : MonoBehaviour
     public static GamePlayManager Instance;
     [SerializeField] public CardLayoutManager cardLayoutManager; // Reference to the CardLayoutManager
     public List<CardData> cardSOList; // List of CardData objects to initialize the layout
-
-    [SerializeField] private Vector2Int layoutSize ; 
     [SerializeField] private Vector2Int layoutSize;
     [SerializeField] private int cardsToMatch = 2; // Number of cards to match
     Coroutine cardMatchCoroutine; // Coroutine for matching cards
