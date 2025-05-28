@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GamePlayManager : MonoBehaviour
 {
@@ -31,7 +32,7 @@ public class GamePlayManager : MonoBehaviour
 
         gameStats = new GameStats(); // Initialize game stats
         uiManager.Initialize(gameStats);
-        
+
     }
 
     // Start is called before the first frame update
@@ -45,14 +46,14 @@ public class GamePlayManager : MonoBehaviour
         int totalCards = gameConfig.layoutSize.x * gameConfig.layoutSize.y; // Calculate total cards based on layout size
         var cards = GererateCards(totalCards);
         spawnedCards = cardLayoutManager.InitCardLayout(cards, gameConfig.layoutSize); // Initialize the card layout with the generated cards
-        RegisterCardEvents(); // Register card click events
+        RegisterEvents(); // Register card click events
         gameStats.Initialize(spawnedCards.Count / 2); // Initialize game stats with the number of pairs
         cardRevealCoroutine = StartCoroutine(RevealCardsThenClose(gameConfig.revealDelay)); // Start revealing cards with a delay
     }
     List<CardData> GererateCards(int count)
     {
         List<CardData> generatedCards = new List<CardData>();
-        for (int i = 0; i < count/2; i++)
+        for (int i = 0; i < count / 2; i++)
         {
             int index = i % cardSOList.Count;
             var cardData = cardSOList[index];
@@ -104,7 +105,7 @@ public class GamePlayManager : MonoBehaviour
 
             // Wait a moment to allow the last card animation to finish
             yield return new WaitForSeconds(gameConfig.matchCheckDelay);
-            gameStats.IncrementTurnCount(); 
+            gameStats.IncrementTurnCount();
             // Check if they match
             bool isMatch = true;
             var reference = matchGroup[0].GetCardData();
@@ -147,22 +148,26 @@ public class GamePlayManager : MonoBehaviour
     {
 
     }
-    void RegisterCardEvents()
+    void RegisterEvents()
     {
+        //Card events registration
         foreach (var card in spawnedCards)
         {
             card.OnCardClicked += OnCardClicked; // Register the click event for each card
         }
+        // Game restart event registration
+        GameEvents.OnGameRestart += RestartGame; // Register the game restart event
     }
-    void UnregisterCardEvents()
+    void UnregisterEvents()
     {
+        // Unregister the game restart event
         foreach (var card in spawnedCards)
         {
             card.OnCardClicked -= OnCardClicked; // Unregister the click event for each card
         }
+        GameEvents.OnGameRestart -= RestartGame; // Unregister the game restart event
     }
-    
-    public void OnDestroy()
+    public void Reset()
     {
         if (cardMatchCoroutine != null)
         {
@@ -174,12 +179,24 @@ public class GamePlayManager : MonoBehaviour
             StopCoroutine(cardRevealCoroutine);
             cardRevealCoroutine = null;
         }
-        Instance = null;
-        UnregisterCardEvents(); // Unregister all card events to prevent memory leaks
+
+        UnregisterEvents(); // Unregister all card events to prevent memory leaks
         spawnedCards.Clear(); // Clear the list of spawned cards
         cardLayoutManager = null; // Clear the reference to the CardLayoutManager
         cardSOList.Clear(); // Clear the list of CardData objects
         matchQueue.Clear(); // Clear the match queue
+        Instance = null;
+    }
+    public void OnDisable()
+    {
+        Reset();
 
+    }
+    public void RestartGame()
+    {
+        StopAllCoroutines();
+        Reset(); // Reset the game state
+       // Reload the current scene
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 }
