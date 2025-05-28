@@ -4,14 +4,13 @@ public class CardController : MonoBehaviour
 {
     public CardView view;           // Reference to CardView
     private CardData cardData;       // Card info
-    public bool IsOpen { get; private set; }
 
     public CardStates CurrentState { get; private set; } 
 
     public event System.Action<CardController> OnCardClicked;
     public void Awake()
     {
-        IsOpen = true;
+        
         view.SetInteractable(false);
         CurrentState = CardStates.Open;
     }
@@ -47,6 +46,15 @@ public class CardController : MonoBehaviour
         view.SetInteractable(false);
         view.FlipCard(true);
        
+        
+    }
+
+    public void SetMatched()
+    {
+        
+        CurrentState = CardStates.Matched;
+        view.SetInteractable(false);
+        view.FadeOutCard();
         
     }
 

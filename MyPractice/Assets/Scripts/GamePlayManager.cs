@@ -128,7 +128,10 @@ public class GamePlayManager : MonoBehaviour
             else
             {
                 gameStats.AddScore(1);
-                // Optionally fade out or disable matched cards
+                foreach (var card in matchGroup)
+                {
+                    card.SetMatched(); // Disable interaction for matched cards
+                }
             }
         }
 
