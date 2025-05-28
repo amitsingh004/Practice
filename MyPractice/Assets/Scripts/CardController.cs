@@ -3,7 +3,7 @@ using UnityEngine;
 public class CardController : MonoBehaviour
 {
     public CardView view;           // Reference to CardView
-    public CardData cardData;       // Card info
+    private CardData cardData;       // Card info
     public bool IsOpen { get; private set; }
 
     public CardStates CurrentState { get; private set; } 

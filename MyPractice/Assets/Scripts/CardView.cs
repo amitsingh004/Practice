@@ -5,10 +5,10 @@ using UnityEngine.UI;
 
 public class CardView : MonoBehaviour
 {
-    public Image frontImage;
-    public GameObject back;
-    public GameObject front;
-    public Button button;
+    [SerializeField] private Image frontImage;
+    [SerializeField] private GameObject back;
+    [SerializeField] private GameObject front;
+    [SerializeField] private Button button;
     public bool IsFlipping { get; private set; }
     [SerializeField] private float flipDuration = 0.2f;
     private Coroutine flipCoroutine;
