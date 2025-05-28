@@ -38,11 +38,12 @@ public class GamePlayManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+
         if (localStorageManager.HasSavedGame())
         {
-            
-            LoadGameState(); // Load saved game state if available
+            localStorageManager.DeleteSaveData();
+             //LoadGameState(); // Load saved game state if available
+            StartNewGame();
         }
         else
         {
@@ -226,6 +227,12 @@ public class GamePlayManager : MonoBehaviour
 
     private void SaveGameState()
     {
+        if (gameStats.IsGameComplete)
+        {
+            Debug.Log("Game already completed. No need to save.");
+            localStorageManager.DeleteSaveData(); // Delete save data if the game is complete
+            return; // Don't save if the game is already complete
+        }
         var gameSaveState = new GameSaveState
         {
             score = gameStats.Score,
