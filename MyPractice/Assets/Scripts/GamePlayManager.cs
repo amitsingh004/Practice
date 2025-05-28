@@ -57,7 +57,7 @@ public class GamePlayManager : MonoBehaviour
 
     public void OnCardClicked(CardController card)
     {
-        if (card.IsOpen || matchQueue.Contains(card))
+        if (card.CurrentState == CardStates.Open || matchQueue.Contains(card))
             return;
 
         card.Open();
