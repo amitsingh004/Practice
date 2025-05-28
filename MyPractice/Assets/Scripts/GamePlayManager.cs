@@ -38,11 +38,10 @@ public class GamePlayManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        StartNewGame(); // Start a new game when the script is initialized
+        
         if (localStorageManager.HasSavedGame())
         {
-            //localStorageManager.DeleteSaveData();
-            //StartNewGame(); // Start a new game when the script is initialized
+            
             LoadGameState(); // Load saved game state if available
         }
         else
