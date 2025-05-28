@@ -49,6 +49,13 @@ public class CardController : MonoBehaviour
         
     }
 
+    public void OpenWithoutAnimation()
+    {
+        if (CurrentState != CardStates.Closed || view.IsFlipping) return;
+        CurrentState = CardStates.Open;
+        view.SetInteractable(false);
+        view.FlipCardWithoutAnimation(true);
+    }
     public void SetMatched()
     {
         
@@ -58,6 +65,12 @@ public class CardController : MonoBehaviour
         
     }
 
+    public void SetMatchedWithoutAnimation()
+    {
+        CurrentState = CardStates.Matched;
+        view.SetInteractable(false);
+        view.FadeOutCardWithoutAnimation();
+    }
     public void Close()
     {
         if (CurrentState != CardStates.Open || view.IsFlipping) return;
@@ -67,6 +80,13 @@ public class CardController : MonoBehaviour
         
     }
 
+    public void CloseWithoutAnimation()
+    {
+        if (CurrentState != CardStates.Open || view.IsFlipping) return;
+        CurrentState = CardStates.Closed;
+        view.FlipCardWithoutAnimation(false);
+        view.SetInteractable(true);
+    }
     public void OnDestroy()
     {
        OnCardClicked = null; // Unsubscribe from the event to prevent memory leaks

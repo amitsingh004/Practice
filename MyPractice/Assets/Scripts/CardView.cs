@@ -51,6 +51,12 @@ public class CardView : MonoBehaviour
         }
         flipCoroutine = StartCoroutine(FlipRoutine(openCard));
     }
+    public void FlipCardWithoutAnimation(bool openCard)
+    {
+        IsFlipping = false;
+        ShowFront(openCard);
+        transform.rotation = Quaternion.Euler(0f, openCard ? 180f : 0f, 0f);
+    }
     private IEnumerator FlipRoutine(bool openCard)
     {
         IsFlipping = true;
@@ -88,6 +94,15 @@ public class CardView : MonoBehaviour
             StopCoroutine(fadeCoroutine);
         }
         fadeCoroutine = StartCoroutine(FadeOutRoutine());
+    }
+    public void FadeOutCardWithoutAnimation()
+    {
+        CanvasGroup canvasGroup = GetComponent<CanvasGroup>();
+        if (canvasGroup == null)
+        {
+            canvasGroup = gameObject.AddComponent<CanvasGroup>();
+        }
+        canvasGroup.alpha = 0f; // Set alpha to 0 immediately
     }
     private IEnumerator FadeOutRoutine()
     {

@@ -10,6 +10,10 @@ public class GameStats
     public event Action<int> OnTurnCountChanged;
     public event Action OnGameWon;
 
+    public int Score => score;
+    public int TurnCount => turnCount;
+
+
     public void Initialize(int totalPairs)
     {
         this.totalPairs = totalPairs;
@@ -30,9 +34,9 @@ public class GameStats
         OnTurnCountChanged?.Invoke(turnCount);
         Debug.Log("Turn count reset to 0.");
     }
-    public void IncrementTurnCount()
+    public void AddTurnCount(int count)
     {
-        turnCount++;
+        turnCount+=count;
         Debug.Log($"Turn count increased to {turnCount}");
         OnTurnCountChanged?.Invoke(turnCount);
     }

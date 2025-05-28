@@ -16,6 +16,7 @@ public class GamePlayManager : MonoBehaviour
     private Queue<CardController> matchQueue = new Queue<CardController>();
     private bool isProcessingQueue = false;
     private GameStats gameStats;
+    private LocalStrgMgr localStorageManager;
     void Awake()
     {
         if (Instance == null)
@@ -31,12 +32,23 @@ public class GamePlayManager : MonoBehaviour
         gameStats = new GameStats(); // Initialize game stats
         uiManager.Initialize(gameStats);
 
+        localStorageManager = new LocalStrgMgr();
     }
 
     // Start is called before the first frame update
     void Start()
     {
         StartNewGame(); // Start a new game when the script is initialized
+        if (localStorageManager.HasSavedGame())
+        {
+            //localStorageManager.DeleteSaveData();
+            //StartNewGame(); // Start a new game when the script is initialized
+            LoadGameState(); // Load saved game state if available
+        }
+        else
+        {
+            StartNewGame(); // Start a new game when the script is initialized
+        }
     }
 
     void StartNewGame()
@@ -103,13 +115,13 @@ public class GamePlayManager : MonoBehaviour
 
             // Wait a moment to allow the last card animation to finish
             yield return new WaitForSeconds(gameConfig.matchCheckDelay);
-            gameStats.IncrementTurnCount();
+            gameStats.AddTurnCount(1);
             // Check if they match
             bool isMatch = true;
-            var reference = matchGroup[0].GetCardData();
+            var startId = matchGroup[0].GetCardData().id;
             for (int i = 1; i < matchGroup.Count; i++)
             {
-                if (matchGroup[i].GetCardData() != reference)
+                if (matchGroup[i].GetCardData().id != startId)
                 {
                     isMatch = false;
                     break;
@@ -197,7 +209,114 @@ public class GamePlayManager : MonoBehaviour
     {
         StopAllCoroutines();
         Reset(); // Reset the game state
-       // Reload the current scene
+                 // Reload the current scene
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
+    private void OnApplicationPause(bool pauseStatus)
+    {
+        if (pauseStatus)
+        {
+            SaveGameState();
+        }
+    }
+
+    private void OnApplicationQuit()
+    {
+        SaveGameState();
+    }
+
+    private void SaveGameState()
+    {
+        var gameSaveState = new GameSaveState
+        {
+            score = gameStats.Score,
+            turns = gameStats.TurnCount,
+            layoutSize = gameConfig.layoutSize,
+            cardIds = new int[spawnedCards.Count],
+            cardStates = new int[spawnedCards.Count]
+        };
+     
+        for (int i = 0; i < spawnedCards.Count; i++)
+        {
+            gameSaveState.cardIds[i] = spawnedCards[i].GetCardId();
+            gameSaveState.cardStates[i] = (int)spawnedCards[i].CurrentState; // Save the current state of each card
+        }
+        
+        
+        localStorageManager.SaveGame(gameSaveState); // Save the game state using LocalStrgMgr
+        Debug.Log("Game state saved successfully.");
+
+    }
+    private void LoadGameState()
+    {
+        GameSaveState gameSaveState;
+        localStorageManager.LoadGame(out gameSaveState); // Load the game state using LocalStrgMgr
+        if (gameSaveState != null)
+        {
+            //Recreate the card layout based on the saved state
+            gameConfig.layoutSize = gameSaveState.layoutSize;
+            // gegerate the card data based on the saved IDs
+            List<CardData> cardDataList = new List<CardData>();
+            for (int i = 0; i < gameSaveState.cardIds.Length; i++)
+            {
+                int cardId = gameSaveState.cardIds[i];
+                CardData cardDataSO = cardSOList.Find(card => card.id == cardId);
+                if (cardDataSO != null)
+                {
+                    cardDataList.Add(cardDataSO);
+                }
+            }
+            // Initialize the card layout with the loaded card data
+            spawnedCards = cardLayoutManager.InitCardLayout(cardDataList, gameConfig.layoutSize);
+            //Apply the saved states to the cards
+            for (int i = 0; i < spawnedCards.Count; i++)
+            {
+                CardController card = spawnedCards[i];
+                var savedState = (CardStates)gameSaveState.cardStates[i];
+                //Apply the saved state to the card
+                switch (savedState)
+                {
+                    case CardStates.Open:
+                    case CardStates.Closed:
+                        card.CloseWithoutAnimation();
+                        break;
+                    case CardStates.Matched:
+                        card.SetMatchedWithoutAnimation();
+                        break;
+                    default:
+                        card.CloseWithoutAnimation(); // Default to closed state if unknown
+                        break;
+                }
+
+            }
+            //Reset the game progress controller with the loaded score and turns
+            gameStats.Initialize(spawnedCards.Count / 2);
+            gameStats.AddScore(gameSaveState.score);
+            gameStats.AddTurnCount(gameSaveState.turns);
+
+            RegisterEvents(); // Register card click events
+
+            // if (gameSaveState.matchQueue.Length > 0)
+            // {
+            //     // Rebuild the match queue from the saved state
+            //     foreach (var cardId in gameSaveState.matchQueue)
+            //     {
+            //         var card = spawnedCards.Find(c => c.GetCardId() == cardId);
+            //         if (card != null && card.CurrentState != CardStates.Matched && card.CurrentState != CardStates.Closed)
+            //         {
+            //             matchQueue.Enqueue(card);
+            //         }
+            //     }
+            //     isProcessingQueue = false; // Reset the processing flag
+            //     cardMatchCoroutine = StartCoroutine(CheckMatch()); // Restart the match checking coroutine
+            // }
+            // else
+            // {
+            //     matchQueue.Clear(); // No cards in the match queue
+            // }
+           
+            
+            Debug.Log("Game state loaded successfully.");
+        }
     }
 }
