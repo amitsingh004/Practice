@@ -10,20 +10,16 @@ public class CardLayoutManager : MonoBehaviour
     public GridLayoutGroup cardsGrid; // Reference to the GridLayoutGroup component
     public Transform cardParent; // Parent transform for the cards
 
-    private List<CardController> spawnedCards = new List<CardController>();
-
-    
-    private Coroutine cardRevealCoroutine;
-    public void InitCardLayout(List<CardData> cardDataList, Vector2Int layoutSize)
+   
+   
+    public List<CardController> InitCardLayout(List<CardData> cardDataList, Vector2Int layoutSize)
     {
-
-       
+         List<CardController> spawnedCards = new List<CardController>();
         // Set the layout size based on the provided data
         cardsGrid.constraint = GridLayoutGroup.Constraint.FixedColumnCount; // Use fixed column count
         cardsGrid.constraintCount = layoutSize.x;
 
 
-        
         // Create new cards based on the provided data
         foreach (var cardData in cardDataList)
         {
@@ -39,17 +35,11 @@ public class CardLayoutManager : MonoBehaviour
                 Debug.LogError("CardController component is missing on the card prefab!");
             }
         }
-        cardRevealCoroutine = StartCoroutine(RevealCardsThenClose(0.5f)); // Start revealing cards with a delay
+        return spawnedCards; // Return the list of spawned cards
+        
     }
 
-    private IEnumerator RevealCardsThenClose(float delay)
-    {
-        yield return new WaitForSeconds(delay);
-        foreach (var card in spawnedCards)
-        {
-            card.Close(); // Close the card after the delay
-        }
-    }
+   
 
    
     // Start is called before the first frame update
@@ -67,10 +57,6 @@ public class CardLayoutManager : MonoBehaviour
     void OnDestroy()
     {
         
-        if (cardRevealCoroutine != null)
-        {
-            StopCoroutine(cardRevealCoroutine); // Stop the coroutine if it is running
-            cardRevealCoroutine = null; // Clear the reference
-        }
+       
     }
 }

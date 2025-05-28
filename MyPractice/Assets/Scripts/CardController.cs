@@ -8,6 +8,7 @@ public class CardController : MonoBehaviour
 
     public CardStates CurrentState { get; private set; } 
 
+    public event System.Action<CardController> OnCardClicked;
     public void Awake()
     {
         IsOpen = true;
@@ -35,7 +36,7 @@ public class CardController : MonoBehaviour
     {
         if (CurrentState == CardStates.Closed && !view.IsFlipping)
         {
-            GamePlayManager.Instance.OnCardClicked(this);
+            OnCardClicked?.Invoke(this); // Invoke the event when the card is clicked
         }
     }
 
@@ -60,6 +61,6 @@ public class CardController : MonoBehaviour
 
     public void OnDestroy()
     {
-       
+       OnCardClicked = null; // Unsubscribe from the event to prevent memory leaks
     }
 }

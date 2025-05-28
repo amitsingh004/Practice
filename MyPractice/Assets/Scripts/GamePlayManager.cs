@@ -7,9 +7,11 @@ public class GamePlayManager : MonoBehaviour
     public static GamePlayManager Instance;
     [SerializeField] public CardLayoutManager cardLayoutManager; // Reference to the CardLayoutManager
     public List<CardData> cardSOList; // List of CardData objects to initialize the layout
+    private List<CardController> spawnedCards = new List<CardController>();
     [SerializeField] private Vector2Int layoutSize;
     [SerializeField] private int cardsToMatch = 2; // Number of cards to match
     Coroutine cardMatchCoroutine; // Coroutine for matching cards
+    private Coroutine cardRevealCoroutine;
     private Queue<CardController> matchQueue = new Queue<CardController>();
     private bool isProcessingQueue = false;
     int score = 0; // Player's score
@@ -28,7 +30,10 @@ public class GamePlayManager : MonoBehaviour
     {
         int totalCards = layoutSize.x * layoutSize.y; // Calculate total cards based on layout size
         var cards = GererateCards(totalCards);
-        cardLayoutManager.InitCardLayout(cards, layoutSize); // Initialize the card layout with the generated cards
+        spawnedCards = cardLayoutManager.InitCardLayout(cards, layoutSize); // Initialize the card layout with the generated cards
+        RegisterCardEvents(); // Register card click events
+        
+        cardRevealCoroutine = StartCoroutine(RevealCardsThenClose(0.5f)); // Start revealing cards with a delay
     }
     List<CardData> GererateCards(int count)
     {
@@ -115,20 +120,55 @@ public class GamePlayManager : MonoBehaviour
 
         isProcessingQueue = false;
     }
-
+    private IEnumerator RevealCardsThenClose(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        foreach (var card in spawnedCards)
+        {
+            card.Close(); // Close the card after the delay
+        }
+    }
     // Update is called once per frame
     void Update()
     {
 
     }
+    void RegisterCardEvents()
+    {
+        foreach (var card in spawnedCards)
+        {
+            card.OnCardClicked += OnCardClicked; // Register the click event for each card
+        }
+    }
+    void UnregisterCardEvents()
+    {
+        foreach (var card in spawnedCards)
+        {
+            card.OnCardClicked -= OnCardClicked; // Unregister the click event for each card
+        }
+    }
     public void OnDestroy()
     {
         if (cardMatchCoroutine != null)
         {
-            StopCoroutine(cardMatchCoroutine); // Stop the coroutine if it is running
-            cardMatchCoroutine = null; // Clear the reference
+            StopCoroutine(cardMatchCoroutine);
+            cardMatchCoroutine = null;
         }
-        Instance = null; // Clear the instance reference
-        
+        if (cardRevealCoroutine != null)
+        {
+            StopCoroutine(cardRevealCoroutine);
+            cardRevealCoroutine = null;
+        }
+        Instance = null;
+        UnregisterCardEvents(); // Unregister all card events to prevent memory leaks
+        foreach (var card in spawnedCards)
+        {
+            Destroy(card.gameObject); // Clean up card objects
+        }
+        spawnedCards.Clear(); // Clear the list of spawned cards
+        cardLayoutManager = null; // Clear the reference to the CardLayoutManager
+        cardSOList.Clear(); // Clear the list of CardData objects
+        matchQueue.Clear(); // Clear the match queue
+
     }
 }
