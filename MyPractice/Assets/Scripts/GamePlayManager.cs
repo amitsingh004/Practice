@@ -12,7 +12,6 @@ public class GamePlayManager : MonoBehaviour
     public List<CardData> cardSOList; // List of CardData objects to initialize the layout
     private List<CardController> spawnedCards = new List<CardController>();
     [SerializeField] private Vector2Int layoutSize;
-    [SerializeField] private int cardsToMatch = 2; // Number of cards to match
     Coroutine cardMatchCoroutine; // Coroutine for matching cards
     private Coroutine cardRevealCoroutine;
     private Queue<CardController> matchQueue = new Queue<CardController>();
