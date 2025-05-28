@@ -11,7 +11,6 @@ public class GamePlayManager : MonoBehaviour
     [SerializeField] private UIManager uiManager;
     public List<CardData> cardSOList; // List of CardData objects to initialize the layout
     private List<CardController> spawnedCards = new List<CardController>();
-    [SerializeField] private Vector2Int layoutSize;
     Coroutine cardMatchCoroutine; // Coroutine for matching cards
     private Coroutine cardRevealCoroutine;
     private Queue<CardController> matchQueue = new Queue<CardController>();
@@ -119,7 +118,7 @@ public class GamePlayManager : MonoBehaviour
 
             if (!isMatch)
             {
-                yield return new WaitForSeconds(1f); // Allow time to see unmatched cards
+                yield return new WaitForSeconds(0.5f); // Allow time to see unmatched cards
                 foreach (var card in matchGroup)
                 {
                     card.Close();
