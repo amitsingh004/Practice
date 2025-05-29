@@ -58,6 +58,7 @@ public class LocalStrgMgr
         if (HasSavedGame())
         {
             File.Delete(SaveFilePath);
+            Debug.Log($"Save file deleted: {SaveFilePath}");
         }
     }
 }
