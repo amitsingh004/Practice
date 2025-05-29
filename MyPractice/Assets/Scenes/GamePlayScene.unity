@@ -1815,7 +1815,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f9772d109dccb4573bb962b9016674c1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameConfig: {fileID: 11400000, guid: 2ab37f41fb2a54f2f922c8daf6d20d63, type: 2}
+  gameConfigs:
+  - {fileID: 11400000, guid: 3008e9726b1cc44498b5af970eca355e, type: 2}
+  - {fileID: 11400000, guid: bc66ae14163e9432a93269da9281c3c4, type: 2}
+  - {fileID: 11400000, guid: 2ab37f41fb2a54f2f922c8daf6d20d63, type: 2}
+  - {fileID: 11400000, guid: 97d9a4f96465845559e9235f96a03e66, type: 2}
+  - {fileID: 11400000, guid: 9ee0a7a6830f0441787dc45b696b3123, type: 2}
+  - {fileID: 11400000, guid: 2b8fde81e95e249969e09c9662c69466, type: 2}
   cardLayoutManager: {fileID: 796911177}
   uiManager: {fileID: 1690030688}
   cardSOList:
