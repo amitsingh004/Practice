@@ -6,7 +6,8 @@ using UnityEngine.SceneManagement;
 public class GamePlayManager : MonoBehaviour
 {
     public static GamePlayManager Instance;
-    [SerializeField] private GameConfig gameConfig;
+    [SerializeField] private List<GameConfig> gameConfigs; // List of GameConfig objects to choose from
+    private GameConfig gameConfig;
     [SerializeField] public CardLayoutManager cardLayoutManager; // Reference to the CardLayoutManager
     [SerializeField] private UIManager uiManager;
     public List<CardData> cardSOList; // List of CardData objects to initialize the layout
@@ -40,17 +41,36 @@ public class GamePlayManager : MonoBehaviour
         if (localStorageManager.HasSavedGame())
         {
             localStorageManager.DeleteSaveData();
-             //LoadGameState(); // Load saved game state if available
             StartNewGame();
+             LoadGameState(); // Load saved game state if available
+           
         }
         else
         {
             StartNewGame(); // Start a new game when the script is initialized
         }
     }
-
+    // Select a random game configuration from the list
+    private void SelectRandomGameConfig()
+    {
+        if (gameConfigs.Count > 0)
+        {
+            int randomIndex = Random.Range(0, gameConfigs.Count);
+            gameConfig = gameConfigs[randomIndex];
+        }
+        else
+        {
+            Debug.LogError("No game configurations available!");
+        }
+    }
     void StartNewGame()
     {
+        SelectRandomGameConfig(); // Select a random game configuration
+        if (gameConfig == null)
+        {
+            Debug.LogError("Game configuration is not set!");
+            return;
+        }
         int totalCards = gameConfig.layoutSize.x * gameConfig.layoutSize.y; // Calculate total cards based on layout size
         var cards = GererateCards(totalCards);
         spawnedCards = cardLayoutManager.InitCardLayout(cards, gameConfig.layoutSize); // Initialize the card layout with the generated cards
