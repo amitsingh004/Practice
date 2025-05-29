@@ -15,5 +15,5 @@ MonoBehaviour:
   config_Id: 6
   layoutSize: {x: 6, y: 3}
   cardsToMatch: 2
-  revealDelay: 1
+  revealDelay: 3
   matchCheckDelay: 0.4
