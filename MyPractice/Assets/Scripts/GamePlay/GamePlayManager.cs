@@ -310,13 +310,13 @@ public class GamePlayManager : MonoBehaviour
                 {
                     case CardStates.Open:
                     case CardStates.Closed:
-                        card.CloseWithoutAnimation();
+                        card.OpenWithoutAnimation();
                         break;
                     case CardStates.Matched:
                         card.SetMatchedWithoutAnimation();
                         break;
                     default:
-                        card.CloseWithoutAnimation(); // Default to closed state if unknown
+                        card.OpenWithoutAnimation(); // Default to closed state if unknown
                         break;
                 }
 
@@ -329,7 +329,8 @@ public class GamePlayManager : MonoBehaviour
             gameStats.AddTurnCount(gameSaveState.turns);
 
             RegisterEvents(); // Register card click events
-
+            // Start revealing cards with a delay to show the saved state
+            cardRevealCoroutine = StartCoroutine(RevealCardsThenClose(gameConfig.revealDelay)); 
             // if (gameSaveState.matchQueue.Length > 0)
             // {
             //     // Rebuild the match queue from the saved state
