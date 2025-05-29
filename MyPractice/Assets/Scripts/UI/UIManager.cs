@@ -27,6 +27,7 @@ public class UIManager : MonoBehaviour
     private void ShowWinMessage()
     {
         gameOverPanel.SetActive(true);
+        AudioMgr.Instance.PlaySound(SoundType.GameOver);
         //Debug.Log("All pairs matched! You win!");
     }
 

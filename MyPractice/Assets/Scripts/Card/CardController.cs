@@ -45,7 +45,7 @@ public class CardController : MonoBehaviour
         CurrentState = CardStates.Open; ;
         view.SetInteractable(false);
         view.FlipCard(true);
-       
+        AudioMgr.Instance.PlaySound(SoundType.CardFlip); // Play flip sound
         
     }
 
@@ -58,10 +58,11 @@ public class CardController : MonoBehaviour
     }
     public void SetMatched()
     {
-        
+
         CurrentState = CardStates.Matched;
         view.SetInteractable(false);
         view.FadeOutCard();
+        AudioMgr.Instance.PlaySound(SoundType.CardMatch); // Play match sound
         
     }
 
