@@ -41,9 +41,8 @@ public class GamePlayManager : MonoBehaviour
         bool HasSavedGame = localStorageManager.HasSavedGame(); // Check if there is a saved game
         if (HasSavedGame)
         {
-            //localStorageManager.DeleteSaveData();
-           // StartNewGame(); // Start a new game if a saved game exists
-            LoadGameState(); // Load saved game state if available
+            
+           LoadGameState(); // Load saved game state if available
 
         }
         else
@@ -159,6 +158,7 @@ public class GamePlayManager : MonoBehaviour
             else
             {
                 gameStats.AddScore(1);
+                gameStats.AddMatchedPairs(1); // Increment matched pairs count
                 foreach (var card in matchGroup)
                 {
                     card.SetMatched(); // Disable interaction for matched cards
@@ -260,6 +260,7 @@ public class GamePlayManager : MonoBehaviour
         {
             score = gameStats.Score,
             turns = gameStats.TurnCount,
+            matchedPairs = gameStats.MatchedPairs,
             gameConfigId = gameConfig.config_Id,
             cardIds = new int[spawnedCards.Count],
             cardStates = new int[spawnedCards.Count]
@@ -304,6 +305,7 @@ public class GamePlayManager : MonoBehaviour
                 CardController card = spawnedCards[i];
                 var savedState = (CardStates)gameSaveState.cardStates[i];
                 //Apply the saved state to the card
+                
                 switch (savedState)
                 {
                     case CardStates.Open:
@@ -319,8 +321,10 @@ public class GamePlayManager : MonoBehaviour
                 }
 
             }
+            
             //Reset the game progress controller with the loaded score and turns
             gameStats.Initialize(spawnedCards.Count / 2);
+            gameStats.AddMatchedPairs(gameSaveState.matchedPairs); // Add matched pairs from the saved state
             gameStats.AddScore(gameSaveState.score);
             gameStats.AddTurnCount(gameSaveState.turns);
 
