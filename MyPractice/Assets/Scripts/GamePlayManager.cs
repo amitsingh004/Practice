@@ -54,6 +54,10 @@ public class GamePlayManager : MonoBehaviour
     public void OnCardClicked(CardController card)
     {
 
+        if (card.IsCardOpen())
+            card.CloseCard(); // Ignore clicks on already open cards
+        else
+             card.OpenCard();
     }
     // Update is called once per frame
     void Update()

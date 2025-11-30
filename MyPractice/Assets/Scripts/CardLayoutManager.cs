@@ -13,14 +13,17 @@ public class CardLayoutManager : MonoBehaviour
     private List<CardController> spawnedCards = new List<CardController>();
 
     
+    private Coroutine cardRevealCoroutine;
     public void InitCardLayout(List<CardData> cardDataList, Vector2Int layoutSize)
     {
 
+       
         // Set the layout size based on the provided data
         cardsGrid.constraint = GridLayoutGroup.Constraint.FixedColumnCount; // Use fixed column count
         cardsGrid.constraintCount = layoutSize.x;
 
 
+        
         // Create new cards based on the provided data
         foreach (var cardData in cardDataList)
         {
@@ -36,6 +39,16 @@ public class CardLayoutManager : MonoBehaviour
                 Debug.LogError("CardController component is missing on the card prefab!");
             }
         }
+        cardRevealCoroutine = StartCoroutine(RevealCardsThenClose(0.5f)); // Start revealing cards with a delay
+    }
+
+    private IEnumerator RevealCardsThenClose(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        foreach (var card in spawnedCards)
+        {
+            card.CloseCard(); // Close the card after the delay
+        }
     }
 
    
@@ -43,6 +56,7 @@ public class CardLayoutManager : MonoBehaviour
     void Start()
     {
         
+
     }
 
     // Update is called once per frame
@@ -53,5 +67,10 @@ public class CardLayoutManager : MonoBehaviour
     void OnDestroy()
     {
         
+        if (cardRevealCoroutine != null)
+        {
+            StopCoroutine(cardRevealCoroutine); // Stop the coroutine if it is running
+            cardRevealCoroutine = null; // Clear the reference
+        }
     }
 }
