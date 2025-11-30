@@ -47,7 +47,7 @@ public class CardLayoutManager : MonoBehaviour
         yield return new WaitForSeconds(delay);
         foreach (var card in spawnedCards)
         {
-            card.CloseCard(); // Close the card after the delay
+            card.Close(); // Close the card after the delay
         }
     }
 

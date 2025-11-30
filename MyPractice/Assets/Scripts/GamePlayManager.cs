@@ -57,10 +57,10 @@ public class GamePlayManager : MonoBehaviour
 
     public void OnCardClicked(CardController card)
     {
-        if (card.IsCardOpen() || matchQueue.Contains(card))
+        if (card.IsOpen || matchQueue.Contains(card))
             return;
 
-        card.OpenCard();
+        card.Open();
         matchQueue.Enqueue(card);
 
         if (!isProcessingQueue)
@@ -103,7 +103,7 @@ public class GamePlayManager : MonoBehaviour
                 yield return new WaitForSeconds(1f); // Allow time to see unmatched cards
                 foreach (var card in matchGroup)
                 {
-                    card.CloseCard();
+                    card.Close();
                 }
             }
             else
