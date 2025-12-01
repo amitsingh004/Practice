@@ -18,8 +18,8 @@ public class UIGameOver : MonoBehaviour
     
     public void onRestartButtonClicked()
     {
-        // Logic to handle home button click
-        Debug.Log("Home button clicked. Returning to main menu.");
-        // Here you would typically load the main menu scene or reset the game state
+        
+        GameEvents.TriggerGameRestart();
+        
     }
 }
