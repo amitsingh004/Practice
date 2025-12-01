@@ -12,7 +12,7 @@ public class GameStats
 
     public int Score => score;
     public int TurnCount => turnCount;
-
+    public bool IsGameComplete => matchedPairs >= totalPairs;
 
     public void Initialize(int totalPairs)
     {
