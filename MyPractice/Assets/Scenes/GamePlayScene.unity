@@ -1733,6 +1733,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f9772d109dccb4573bb962b9016674c1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gameConfig: {fileID: 11400000, guid: 97d9a4f96465845559e9235f96a03e66, type: 2}
   cardLayoutManager: {fileID: 796911177}
   uiManager: {fileID: 1690030688}
   cardSOList:
@@ -1743,8 +1744,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: fb1df38b35a674b7b8178306b242eaef, type: 2}
   - {fileID: 11400000, guid: 900d0d62a1b8c4b71be73eb412b18338, type: 2}
   - {fileID: 11400000, guid: 4a89e840131564875bd88a9ac991bc6b, type: 2}
-  layoutSize: {x: 2, y: 2}
-  cardsToMatch: 2
 --- !u!4 &1441170699
 Transform:
   m_ObjectHideFlags: 0

@@ -15,4 +15,4 @@ MonoBehaviour:
   layoutSize: {x: 2, y: 3}
   cardsToMatch: 2
   revealDelay: 0.5
-  matchCheckDelay: 1
+  matchCheckDelay: 0.4

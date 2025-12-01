@@ -8,6 +8,6 @@ public class GameConfig : ScriptableObject
     public Vector2Int layoutSize;
     public int cardsToMatch = 2;
     public float revealDelay = 0.5f;
-    public float matchCheckDelay = 1.0f;
+    public float matchCheckDelay = 0.4f;
 }
 
