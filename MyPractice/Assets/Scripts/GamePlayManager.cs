@@ -5,6 +5,7 @@ using UnityEngine;
 public class GamePlayManager : MonoBehaviour
 {
     public static GamePlayManager Instance;
+    [SerializeField] private GameConfig gameConfig;
     [SerializeField] public CardLayoutManager cardLayoutManager; // Reference to the CardLayoutManager
     [SerializeField] private UIManager uiManager;
     public List<CardData> cardSOList; // List of CardData objects to initialize the layout
@@ -41,12 +42,12 @@ public class GamePlayManager : MonoBehaviour
 
     void StartNewGame()
     {
-        int totalCards = layoutSize.x * layoutSize.y; // Calculate total cards based on layout size
+        int totalCards = gameConfig.layoutSize.x * gameConfig.layoutSize.y; // Calculate total cards based on layout size
         var cards = GererateCards(totalCards);
-        spawnedCards = cardLayoutManager.InitCardLayout(cards, layoutSize); // Initialize the card layout with the generated cards
+        spawnedCards = cardLayoutManager.InitCardLayout(cards, gameConfig.layoutSize); // Initialize the card layout with the generated cards
         RegisterCardEvents(); // Register card click events
         gameStats.Initialize(spawnedCards.Count / 2); // Initialize game stats with the number of pairs
-        cardRevealCoroutine = StartCoroutine(RevealCardsThenClose(0.5f)); // Start revealing cards with a delay
+        cardRevealCoroutine = StartCoroutine(RevealCardsThenClose(gameConfig.revealDelay)); // Start revealing cards with a delay
     }
     List<CardData> GererateCards(int count)
     {
@@ -91,18 +92,18 @@ public class GamePlayManager : MonoBehaviour
     {
         isProcessingQueue = true;
 
-        while (matchQueue.Count >= cardsToMatch)
+        while (matchQueue.Count >= gameConfig.cardsToMatch)
         {
             List<CardController> matchGroup = new List<CardController>();
 
             // Dequeue N cards for this match check
-            for (int i = 0; i < cardsToMatch; i++)
+            for (int i = 0; i < gameConfig.cardsToMatch; i++)
             {
                 matchGroup.Add(matchQueue.Dequeue());
             }
 
             // Wait a moment to allow the last card animation to finish
-            yield return new WaitForSeconds(0.5f);
+            yield return new WaitForSeconds(gameConfig.matchCheckDelay);
             gameStats.IncrementTurnCount(); 
             // Check if they match
             bool isMatch = true;
