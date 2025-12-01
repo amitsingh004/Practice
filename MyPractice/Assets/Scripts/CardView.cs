@@ -79,4 +79,12 @@ public class CardView : MonoBehaviour
 
         transform.rotation = Quaternion.Euler(0f, endAngle, 0f);
     }
+    void OnDestroy()
+    {
+        if (flipCoroutine != null)
+        {
+            StopCoroutine(flipCoroutine);
+            flipCoroutine = null;
+        }
+    }
 }
