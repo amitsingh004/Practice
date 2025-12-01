@@ -11,6 +11,8 @@ public class CardView : MonoBehaviour
     [SerializeField] private Button button;
     public bool IsFlipping { get; private set; }
     [SerializeField] private float flipDuration = 0.2f;
+    [SerializeField] private float fadeOutDuration = 0.3f;
+    private Coroutine fadeCoroutine;    
     private Coroutine flipCoroutine;
 
     void Awake()
@@ -79,12 +81,47 @@ public class CardView : MonoBehaviour
 
         transform.rotation = Quaternion.Euler(0f, endAngle, 0f);
     }
+      public void FadeOutCard()
+    {
+        if (fadeCoroutine != null)
+        {
+            StopCoroutine(fadeCoroutine);
+        }
+        fadeCoroutine = StartCoroutine(FadeOutRoutine());
+    }
+    private IEnumerator FadeOutRoutine()
+    {
+        CanvasGroup canvasGroup = GetComponent<CanvasGroup>();
+        if (canvasGroup == null)
+        {
+            canvasGroup = gameObject.AddComponent<CanvasGroup>();
+        }
+
+        float elapsedTime = 0f;
+        float startAlpha = 1f;
+        float endAlpha = 0f;
+
+        while (elapsedTime < fadeOutDuration)
+        {
+            elapsedTime += Time.deltaTime;
+            canvasGroup.alpha = Mathf.Lerp(startAlpha, endAlpha, elapsedTime / fadeOutDuration);
+            yield return null;
+        }
+
+        canvasGroup.alpha = endAlpha;
+        
+    }
     void OnDestroy()
     {
         if (flipCoroutine != null)
         {
             StopCoroutine(flipCoroutine);
             flipCoroutine = null;
+        }
+        if (fadeCoroutine != null)
+        {
+            StopCoroutine(fadeCoroutine);
+            fadeCoroutine = null;
         }
     }
 }
