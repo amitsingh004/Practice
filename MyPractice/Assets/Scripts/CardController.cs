@@ -6,10 +6,13 @@ public class CardController : MonoBehaviour
     public CardData cardData;       // Card info
     public bool IsOpen { get; private set; }
 
+    public CardStates CurrentState { get; private set; } 
+
     public void Awake()
     {
         IsOpen = true;
         view.SetInteractable(false);
+        CurrentState = CardStates.Open;
     }
     public void Start()
     {
@@ -30,7 +33,7 @@ public class CardController : MonoBehaviour
     }
     public void OnClick()
     {
-        if (!IsOpen && !view.IsFlipping)
+        if (CurrentState == CardStates.Closed && !view.IsFlipping)
         {
             GamePlayManager.Instance.OnCardClicked(this);
         }
@@ -38,8 +41,8 @@ public class CardController : MonoBehaviour
 
     public void Open()
     {
-        if (IsOpen || view.IsFlipping) return;
-        IsOpen = true;
+        if (CurrentState != CardStates.Closed || view.IsFlipping) return;
+        CurrentState = CardStates.Open; ;
         view.SetInteractable(false);
         view.FlipCard(true);
        
@@ -48,8 +51,8 @@ public class CardController : MonoBehaviour
 
     public void Close()
     {
-        if (!IsOpen || view.IsFlipping) return;
-        IsOpen = false;
+        if (CurrentState != CardStates.Open || view.IsFlipping) return;
+        CurrentState = CardStates.Closed;
         view.FlipCard(false);
         view.SetInteractable(true);
         
