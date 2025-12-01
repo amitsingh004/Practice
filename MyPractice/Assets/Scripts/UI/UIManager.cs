@@ -8,6 +8,10 @@ public class UIManager : MonoBehaviour
 {
     private GameStats gameStats;
 
+    [SerializeField] private TextMeshProUGUI scoreText;
+    [SerializeField] private TextMeshProUGUI turnText;
+    
+    [SerializeField] GameObject gameOverPanel;
     public void Initialize(GameStats stats)
     {
         gameStats = stats;
@@ -20,17 +24,24 @@ public class UIManager : MonoBehaviour
 
     private void ShowWinMessage()
     {
-        Debug.Log("All pairs matched! You win!");
+        gameOverPanel.SetActive(true);
+        //Debug.Log("All pairs matched! You win!");
     }
 
     private void UpdateTurnsDisplay(int turns)
     {
        
+        
+       if (turnText != null)
+            turnText.text = turns.ToString();
     }
 
     private void UpdateScoreDisplay(int totalScore)
     {
         
+
+        if (scoreText != null)
+            scoreText.text = totalScore.ToString();
     }
 
     // Start is called before the first frame update
