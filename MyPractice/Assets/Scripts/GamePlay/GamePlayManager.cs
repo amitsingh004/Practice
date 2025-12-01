@@ -19,15 +19,13 @@ public class GamePlayManager : MonoBehaviour
     private LocalStrgMgr localStorageManager;
     void Awake()
     {
-        if (Instance == null)
+        // Simple singleton pattern without DontDestroyOnLoad
+        if (Instance != null && Instance != this)
         {
-            Instance = this; // Singleton instance
-            DontDestroyOnLoad(gameObject); // Keep this instance across scenes
+            Destroy(gameObject);
+            return;
         }
-        else
-        {
-            Destroy(gameObject); // Destroy duplicate instances
-        }
+        Instance = this;
 
         gameStats = new GameStats(); // Initialize game stats
         uiManager.Initialize(gameStats);
@@ -195,10 +193,13 @@ public class GamePlayManager : MonoBehaviour
 
         UnregisterEvents(); // Unregister all card events to prevent memory leaks
         spawnedCards.Clear(); // Clear the list of spawned cards
-        cardLayoutManager = null; // Clear the reference to the CardLayoutManager
-        cardSOList.Clear(); // Clear the list of CardData objects
+        if (localStorageManager != null)
+        {
+            localStorageManager.DeleteSaveData();
+        }
+        
         matchQueue.Clear(); // Clear the match queue
-        Instance = null;
+        
     }
     public void OnDisable()
     {
