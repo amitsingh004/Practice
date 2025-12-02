@@ -38,12 +38,13 @@ public class GamePlayManager : MonoBehaviour
     void Start()
     {
 
-        if (localStorageManager.HasSavedGame())
+        bool HasSavedGame = localStorageManager.HasSavedGame(); // Check if there is a saved game
+        if (HasSavedGame)
         {
-            localStorageManager.DeleteSaveData();
-            StartNewGame();
-             LoadGameState(); // Load saved game state if available
-           
+            //localStorageManager.DeleteSaveData();
+           // StartNewGame(); // Start a new game if a saved game exists
+            LoadGameState(); // Load saved game state if available
+
         }
         else
         {
@@ -214,7 +215,7 @@ public class GamePlayManager : MonoBehaviour
 
         UnregisterEvents(); // Unregister all card events to prevent memory leaks
         spawnedCards.Clear(); // Clear the list of spawned cards
-        if (localStorageManager != null)
+        if (localStorageManager != null && gameStats.IsGameComplete) 
         {
             localStorageManager.DeleteSaveData();
         }
@@ -259,7 +260,7 @@ public class GamePlayManager : MonoBehaviour
         {
             score = gameStats.Score,
             turns = gameStats.TurnCount,
-            layoutSize = gameConfig.layoutSize,
+            gameConfigId = gameConfig.config_Id,
             cardIds = new int[spawnedCards.Count],
             cardStates = new int[spawnedCards.Count]
         };
@@ -282,7 +283,8 @@ public class GamePlayManager : MonoBehaviour
         if (gameSaveState != null)
         {
             //Recreate the card layout based on the saved state
-            gameConfig.layoutSize = gameSaveState.layoutSize;
+            gameConfig = gameConfigs.Find(config => config.config_Id == gameSaveState.gameConfigId);
+            Vector2Int layoutSize = gameConfig.layoutSize; // Get the layout size from the saved game config
             // gegerate the card data based on the saved IDs
             List<CardData> cardDataList = new List<CardData>();
             for (int i = 0; i < gameSaveState.cardIds.Length; i++)
@@ -295,7 +297,7 @@ public class GamePlayManager : MonoBehaviour
                 }
             }
             // Initialize the card layout with the loaded card data
-            spawnedCards = cardLayoutManager.InitCardLayout(cardDataList, gameConfig.layoutSize);
+            spawnedCards = cardLayoutManager.InitCardLayout(cardDataList, layoutSize);
             //Apply the saved states to the cards
             for (int i = 0; i < spawnedCards.Count; i++)
             {
