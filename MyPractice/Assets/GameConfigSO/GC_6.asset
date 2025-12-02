@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ecabb9c06088e4ce59ea65f4b99259a1, type: 3}
   m_Name: GC_6
   m_EditorClassIdentifier: 
-  layoutSize: {x: 0, y: 0}
+  layoutSize: {x: 6, y: 3}
   cardsToMatch: 2
   revealDelay: 0.5
   matchCheckDelay: 0.4
