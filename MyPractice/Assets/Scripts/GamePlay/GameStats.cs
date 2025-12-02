@@ -13,7 +13,7 @@ public class GameStats
     public int Score => score;
     public int TurnCount => turnCount;
     public bool IsGameComplete => matchedPairs >= totalPairs;
-
+    public int MatchedPairs => matchedPairs;
     public void Initialize(int totalPairs)
     {
         this.totalPairs = totalPairs;
@@ -43,11 +43,15 @@ public class GameStats
     public void AddScore(int amount)
     {
         score += amount;
-        matchedPairs++;
         Debug.Log($"Score increased by {amount}. Current score: {score}");
         OnScoreChanged?.Invoke(score);
-        CheckGameWin(); 
     
+    }
+    public void AddMatchedPairs(int pairCount)
+    {
+        matchedPairs+=pairCount;
+        Debug.Log($"Matched pairs increased to {matchedPairs}");
+        CheckGameWin();
     }
     public void CheckGameWin()
     {
