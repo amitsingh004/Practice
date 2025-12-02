@@ -128,6 +128,7 @@ public class GamePlayManager : MonoBehaviour
 
             if (!isMatch)
             {
+                AudioMgr.Instance.PlaySound(SoundType.CardMismatch); // Play mismatch sound
                 yield return new WaitForSeconds(0.5f); // Allow time to see unmatched cards
                 foreach (var card in matchGroup)
                 {
